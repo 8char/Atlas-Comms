@@ -1,0 +1,226 @@
+AtlasComms.Config = AtlasComms.Config or {}
+AtlasComms.Config.Channels = AtlasComms.Config.Channels or {}
+AtlasComms.Config.SuperAdminComms = AtlasComms.Config.SuperAdminComms or {}
+AtlasComms.Config.JobComms = AtlasComms.Config.JobComms or {}
+AtlasComms.Config.AdminJobs = AtlasComms.Config.CantUseJobs or {}
+AtlasComms.Config.AdminJobs = AtlasComms.Config.AdminJobs or {}
+AtlasComms.Config.IgnoreJobs = AtlasComms.Config.IgnoreJobs or {}
+
+
+
+---
+-- Adds a new comm to the comms table.
+-- @param name The name of the comm.
+-- @param commands A table of aliases for the comm.
+-- @param color The color to use for the comm in the chat.
+-- @return Nothing
+function AtlasComms.Config:AddComms(name: string, commands: table, color: table)
+    for key, command in ipairs({ commands }) do
+        AtlasUI.Units.Assert(comm)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} position of the commands table to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.Channels[name] =  {
+        commands = commands,
+        color = color or color_white
+    }
+end
+
+
+
+---
+-- Sets the given comms as super admin comms.
+-- @param ... A list of comm names to set as super admin comms.
+-- @return Nothing
+function AtlasComms.Config:SetSuperAdminComms( ... )
+    AtlasUI.Units.Assert(self.SuperAdminComms)
+        :isTableEmpty("Expected the AtlasComms.Config.SuperAdminComms table to be an empty table, but it was't. Have you already set the Super-Admin comms?")
+    for key, comm in ipairs({ ... }) do
+        AtlasUI.Units.Assert(comm)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetSuperAdminComms to be "${name}", but it is type "${type(value.val)}"`
+            end)
+        self.SuperAdminComms[v] = true
+    end
+end
+
+
+
+---
+-- Assigns the given comms to the specified job.
+-- @param jobName The name of the job.
+-- @param commsTable A table of comm names (strings) to assign to the job.
+-- @return Nothing
+function AtlasComms.Config:AssignComms(jobName: string, commsTable: table)
+    AtlasUI.Units.Assert(self.JobComms[jobName])
+        :isNil(function(value)
+            return `Expected AtlasComms.Config.JobComms[${jobName}] to be nil, but it wasn't. Therefore it's trying to overwrite it. Check for duplicates!`
+        end)
+    self.JobComms[jobName] = commsTable
+end
+
+
+
+---
+-- Sets the jamming characters.
+-- @param ... A list of characters to use as jamming characters.
+-- @return Nothing
+function AtlasComms.Config:SetJammingCharacters( ... )
+    AtlasUI.Units.Assert(self.JammingCharacters)
+        :isTableEmpty("Expected the AtlasComms.Config.JammingCharacters table to be an empty table, but it was't. Have you already set the jamming characters?")
+    for key, comm in ipairs({ ... }) do
+        AtlasUI.Units.Assert(comm)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetJammingCharacters to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.JammingCharacters = { ... }
+end
+
+
+
+---
+-- Sets the jobs who can use the "stripcomms" command.
+-- @param ... A list of player names.
+-- @return Nothing
+function AtlasComms.Config:SetCanStripComms( ... )
+    AtlasUI.Units.Assert(self.CanStripComms)
+        :isTableEmpty("Expected the AtlasComms.Config.CanStripComms table to be an empty table, but it was't. Have you already set the jobs that can strip comms?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetCanStripComms to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.CanStripComms = { ... }
+end
+
+
+
+---
+-- Sets the jobs who cannot be stripped of their comms using the "stripcomms" command.
+-- @param ... A list of job names.
+-- @return Nothing
+function AtlasComms.Config:SetStripCommsBlacklist( ... )
+    AtlasUI.Units.Assert(self.StripCommsBlacklist)
+        :isTableEmpty("Expected the AtlasComms.Config.StripCommsBlacklist table to be an empty table, but it was't. Have you already set the jobs who cant get its comms stripped?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetStripCommsBlacklist to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.SetStripCommsBlacklist = { ... }
+end
+
+---
+-- Sets the given jobs as admin jobs. This means that they will
+-- be able to hear everything said in all of the comms!
+-- @param ... A list of job names to set as admin jobs.
+-- @return Nothing
+function AtlasComms.Config:SetAdminJobs( ... )
+    AtlasUI.Units.Assert(self.AdminJobs)
+        :isTableEmpty("Expected the AtlasComms.Config.AdminJobs table to be an empty table, but it was't. Have you already set the jobs who gets all the comms?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetAdminJobs to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    for k, v in ipairs({ ... }) do
+        self.AdminJobs[v] = true
+    end
+end
+
+
+
+---
+-- Sets the given jobs as ignore jobs. This means that they won't be
+-- given any default or global comms, even if they have any set in the config.
+-- @param ... A list of job names to set as ignore jobs.
+-- @return Nothing
+function AtlasComms.Config:SetIgnoreJobs( ... )
+    AtlasUI.Units.Assert(self.StripCommsBlacklist)
+        :isTableEmpty("Expected the AtlasComms.Config.StripCommsBlacklist table to be an empty table, but it was't. Have you already set the ignored jobs?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetJammingCharacters to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    for k, v in ipairs({ ... }) do
+        self.IgnoreJobs[v] = true
+    end
+end
+
+
+
+---
+-- These jobs will be largely excluded from the Comms System as a whole
+-- therefore these jobs wont be able to be given any comms.
+-- @param ... A list of job names that will exlude those jobs from the comms system.
+-- @return Nothing
+function AtlasComms.Config:SetCantUseJobs( ... )
+    AtlasUI.Units.Assert(self.CantUseJobs)
+        :isTableEmpty("Expected the AtlasComms.Config.CantUseJobs table to be an empty table, but it was't. Have you already set the jobs who can't use the comms system?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetJammingCharacters to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.CantUseJobs = { ... }
+end
+
+
+
+-- Sets the comms that are global. Meaning that everyone that
+-- hasn't been set to be ignored by the Comms System.
+-- @param ... A list of comm names that are global.
+-- @return Nothing
+function AtlasComms.Config:SetGlobalComms( ... )
+    AtlasUI.Units.Assert(self.GlobalComms)
+        :isTableEmpty("Expected the AtlasComms.Config.GlobalComms table to be an empty table, but it was't. Have you already set the global comms?")
+    for key, job in ipairs({ ... }) do
+        AtlasUI.Units.Assert(job)
+            :isType("string", function(value, name)
+                return `Expected "${value.val}" type at the ${AtlasUI:GetOrdinalString(key)} argument of SetGlobalComms to be "${name}", but it is type "${type(value.val)}"`
+            end)
+    end
+    self.GlobalComms = { ... }
+end
+
+function AtlasComms.Config:SetStripCommsCommand(command: string)
+    AtlasUI.Units.Assert(self.StripCommsCommand)
+        :isNil("Expected AtlasComms.Config.GlobalComms to be nil, it was not. Have you already ran the SetStripCommsCommand method?")
+    self.GlobalComms = command
+end
+
+
+-- ENT.CanUse = {}
+-- ENT.MinimumDistance = 200
+-- ENT.CommsChannels = {}
+-- ENT.OneTimeUse = false
+-- ENT.CommsProabability = 1
+-- ENT.CooldownTime = 60
+
+-- local testTable = {
+--     canUse = table or {},
+--     commsChannels = table or {},
+--     minimumDistance = number or 200,
+--     CommsProabability = number or 1,
+--     cooldownTime = number or 60
+-- }
+function AtlasComms.Config:CreateCommsEntity(name: string, canUse: table|nil, commsChannels: table|nil, minimumDistance: number|nil, commsProabability: number|nil, cooldownTime: number|nil, oneTimeUse: number|nil)
+    local ENT = scripted_ents.Get("cs_baseentity")
+
+    ENT.CanUse = canUse or {}
+    ENT.MinimumDistance = minimumDistance or 200
+    ENT.CommsChannels = commsChannels or {}
+    ENT.OneTimeUse = oneTimeUse or false
+    ENT.CommsProabability = commsProabability or 1
+    ENT.CooldownTime = cooldownTime or 60
+
+    scripted_ents.Create(name)
+end
