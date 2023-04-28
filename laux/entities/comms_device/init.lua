@@ -59,7 +59,7 @@ function ENT:Use( activator, ply )
         return;
     end
 
-    if ( ply:GetPos():DistToSqr( self:GetPos() ) > ( dist * dist ) ) then return end
+    stopif ( ply:GetPos():DistToSqr( self:GetPos() ) > ( dist * dist ) )
 
     if ( !ply:AddComms( self.commsChannels ) ) then
         DarkRP.talkToPerson( ply, Color( 0, 100, 255, 255 ), "[COMMS SYSTEM]", Color( 255, 125, 0, 255 ), "This device doesn't contain new communication channels for you", Player( 1 ) );

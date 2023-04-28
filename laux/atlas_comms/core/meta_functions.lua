@@ -56,13 +56,13 @@ function meta:GetComms()
 end
 
 function meta:AddComms( tbl )
-    if not IsValid( self ) then return end
+    stopif not IsValid( self )
 
     if not self.channelComms then self.channelComms = {} end
 
     if AtlasComms.Config.CantUseJobs[ RPExtraTeams[ self:Team() ].category ] then return false end
 
-    if not ( tbl and ( #tbl > 0 ) ) then return end
+    stopif not ( tbl and ( #tbl > 0 ) )
 
     local nTbl = {};
 
@@ -75,7 +75,7 @@ function meta:AddComms( tbl )
 
         local comm = AtlasComms.Config.Channels[ tbl[ i ] ] or false
 
-        if not comm then continue end
+        continueif not comm
 
         count = ( count + 1 );
 

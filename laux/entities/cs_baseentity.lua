@@ -49,14 +49,14 @@ function ENT:Initialize()
 
     timer.Create( "AtlasComms.Beep." .. self:EntIndex(), 2, 0, function()
 
-        if not IsValid( self ) then return end
+        stopif not IsValid( self )
 
         if not self.CommsChannels then
             timer.Remove( "AtlasComms.Beep." .. self:EntIndex() );
             return;
         end
 
-        if not #self.CommsChannels < 1 then return end
+        stopif not #self.CommsChannels < 1
 
         self:EmitSound( "npc/combine_soldier/vo/off3.wav" )
     end)
@@ -92,7 +92,7 @@ function ENT:Use( activator, ply )
         return;
     end
 
-    if ply:GetPos():DistToSqr( self:GetPos() ) > math.pow(self.MinimumDistance, 2) then return end
+    stopif ply:GetPos():DistToSqr( self:GetPos() ) > math.pow(self.MinimumDistance, 2)
 
     if not ply:AddComms( self:RandomCommsSubset(self.CommsProabability) ) then
         DarkRP.talkToPerson( ply, Color( 0, 100, 255, 255 ), "[COMMS SYSTEM]", Color( 255, 125, 0, 255 ), "You were unsucessfull in collecting communication channels", Player( 1 ) );
@@ -140,7 +140,7 @@ function ENT:StartCooldown(delta)
     ply.commsCooldowns[entIndex] = true
 
     timer.Simple(delta, function()
-        if not IsValid(ply) then return end
+        stopif not IsValid(ply)
 
         ply.commsCooldowns[entIndex] = false;
     end)

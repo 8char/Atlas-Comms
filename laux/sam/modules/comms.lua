@@ -1,4 +1,4 @@
-if SAM_LOADED then return end
+stopif SAM_LOADED
 
 local sam, command = sam, sam.command
 
